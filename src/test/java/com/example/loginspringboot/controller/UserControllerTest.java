@@ -93,7 +93,7 @@ class UserControllerTest {
     void unauthorized_id() throws Exception {
         // 무엇을 보내서
         // 무엇을 받을까? : NOT_FOUND
-        given(userService.authorize(any(), any())).willThrow(new HospitalReviewAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage()));
+        given(userService.authenticate(any(), any())).willThrow(new HospitalReviewAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage()));
 
         String url = "/login/login";
 
@@ -101,7 +101,7 @@ class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON).contentType(objectMapper.writeValueAsString(userJoinRequest)))
                 .andExpect(status().isNotFound());
 
-        verify(userService).authorize(any(), any());
+        verify(userService).authenticate(any(), any());
     }
 
     @Test
