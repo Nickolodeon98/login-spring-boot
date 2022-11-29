@@ -3,8 +3,11 @@ package com.example.loginspringboot.service;
 import com.example.loginspringboot.domain.dto.UserDto;
 import com.example.loginspringboot.domain.dto.UserJoinRequest;
 import com.example.loginspringboot.domain.entity.User;
+import com.example.loginspringboot.exception.ErrorCode;
+import com.example.loginspringboot.exception.HospitalReviewAppException;
 import com.example.loginspringboot.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder encoder; // 패스워드 암호화 도구
 
     public UserDto join(UserJoinRequest userJoinRequest) {
         // 비즈니스 로직 : 회원가입
@@ -24,8 +28,9 @@ public class UserService {
 
     public UserDto logIn(UserJoinRequest userJoinRequest) {
         userRepository.findByUserName(userJoinRequest.getUserName())
-                .ifPresent(user -> {throw new RuntimeException("아이디 중복");});
-        User savedUser = userRepository.save(userJoinRequest.toEntity());
+                .ifPresent(user ->
+                {throw new HospitalReviewAppException(ErrorCode.DUPLICATE_USER_NAME, ErrorCode.DUPLICATE_USER_NAME.getMessage());});
+        User savedUser = userRepository.save(userJoinRequest.toEntity(encoder.encode(userJoinRequest.getPassword())));
         return UserDto.builder()
                 .userName(savedUser.getUserName())
                 .email(savedUser.getEmailAddress())
