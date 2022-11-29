@@ -6,7 +6,9 @@ import com.example.loginspringboot.domain.entity.User;
 import com.example.loginspringboot.exception.ErrorCode;
 import com.example.loginspringboot.exception.HospitalReviewAppException;
 import com.example.loginspringboot.repository.UserRepository;
+import com.example.loginspringboot.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,9 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder encoder; // 패스워드 암호화 도구
+    @Value("${jwt.token.secret}")
+    private String secretKey;
+    private final long expiryTimeMs = 1000 * 60 * 60;
 
     public UserDto join(UserJoinRequest userJoinRequest) {
         // 비즈니스 로직 : 회원가입
@@ -47,8 +52,7 @@ public class UserService {
         if (!encoder.matches(password, foundUser.getPassword()))
             throw new HospitalReviewAppException(ErrorCode.INVALID_PASSWORD, ErrorCode.INVALID_PASSWORD.getMessage());
 
-        //TODO: 토큰을 발급한다.
-
-        return "";
+        //TODO: JWT 토큰을 발급한다. 토큰은 인증, 인가를 거친 번호표와 같다. 있으면 통과된다.
+        return JwtUtil.createToken(userName, secretKey, expiryTimeMs);
     }
 }
