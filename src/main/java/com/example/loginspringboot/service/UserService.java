@@ -37,4 +37,11 @@ public class UserService {
                 .phoneNumber(savedUser.getPhoneNumber())
                 .build();
     }
+
+    public String authenticate(String id, String password) {
+        // 일단 틀만 짜놓았다.
+        //TODO: 주어진 아이디와 비밀번호로 토큰을 발급받을 수 있는지 여부를 검사한다.
+
+        return "";
+    }
 }
