@@ -1,15 +1,10 @@
 package com.example.loginspringboot.controller;
 
-import com.example.loginspringboot.domain.dto.Response;
-import com.example.loginspringboot.domain.dto.UserDto;
-import com.example.loginspringboot.domain.dto.UserJoinRequest;
-import com.example.loginspringboot.domain.dto.UserJoinResponse;
+import com.example.loginspringboot.domain.dto.*;
 import com.example.loginspringboot.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/login")
@@ -28,5 +23,11 @@ public class UserController {
     public Response<UserJoinResponse> logInUsers(@RequestBody UserJoinRequest userJoinRequest) {
         UserDto userDto = userService.logIn(userJoinRequest);
         return Response.success(new UserJoinResponse(userDto.getUserName(), userDto.getEmail(), userDto.getPhoneNumber()));
+    }
+
+    @PostMapping("/authentication")
+    public Response<UserLoginResponse> authenticateUsers(@RequestBody UserLoginRequest userLoginRequest) {
+        String token = userService.authenticate(userLoginRequest.getUserName(), userLoginRequest.getPassword());
+        return Response.success(new UserLoginResponse(token));
     }
 }
