@@ -38,9 +38,16 @@ public class UserService {
                 .build();
     }
 
-    public String authenticate(String id, String password) {
-        // 일단 틀만 짜놓았다.
-        //TODO: 주어진 아이디와 비밀번호로 토큰을 발급받을 수 있는지 여부를 검사한다.
+    public String authenticate(String userName, String password) {
+        //TODO: userName 이 존재하는지 확인한다.
+        User foundUser = userRepository.findByUserName(userName)
+                .orElseThrow(() -> new HospitalReviewAppException(ErrorCode.NOT_FOUND, ErrorCode.NOT_FOUND.getMessage()));
+
+        //TODO: password 가 올바른지 확인한다.
+        if (!encoder.matches(password, foundUser.getPassword()))
+            throw new HospitalReviewAppException(ErrorCode.INVALID_PASSWORD, ErrorCode.INVALID_PASSWORD.getMessage());
+
+        //TODO: 토큰을 발급한다.
 
         return "";
     }

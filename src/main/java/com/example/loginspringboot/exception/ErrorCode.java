@@ -4,7 +4,8 @@ import org.springframework.http.HttpStatus;
 
 public enum ErrorCode {
     DUPLICATE_USER_NAME(HttpStatus.CONFLICT, "Duplicate username entry"),
-    NOT_FOUND(HttpStatus.NOT_FOUND, "Id is not registered");
+    NOT_FOUND(HttpStatus.NOT_FOUND, "Id is not registered"),
+    INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "Password is not correct");
 
     private final HttpStatus httpStatus;
     private final String message;
